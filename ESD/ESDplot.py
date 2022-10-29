@@ -103,10 +103,10 @@ ax1.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 # Plot vertical lines for λmax
 # Plot vertical line for λmax of uncorrected spectrum
 ax1.vlines(x=[x_max], ymin=[0], ymax=[1],
-           colors=['Black'], ls='-', linewidth=1)
+           colors=['Black'], linestyle='-', linewidth=1)
 # Plot vertical line for λmax of energy corrected spectrum
 ax1.vlines(x=[x_corrected_max_energy], ymin=[0], ymax=[1],
-           colors=['Red'], ls='--', linewidth=1)
+           colors=['Red'], linestyle='--', linewidth=1)
 
 # Plot legend
 plt.legend(loc='upper right',
