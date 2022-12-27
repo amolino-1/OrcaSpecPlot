@@ -5,17 +5,11 @@ from matplotlib.ticker import FormatStrFormatter
 import matplotlib.pyplot as plt
 from matplotlib.ticker import (MultipleLocator)
 
-
-# Convert cm to inches as figsize input only accepts Imperial units
-def cm_to_inch(value):
-    return value/2.54
-
-
 # Initialize parser
 parser = argparse.ArgumentParser()
 # Add optional arguments
-parser.add_argument("-S", "--spectrum",  # Option keyword
-                    type=str,  # Convert argument to given type
+parser.add_argument("-S", "--spectrumfile",  # Option keyword
+                    type=argparse.FileType('r'),  # Open and read the file specified by the argument
                     required=True,  # Indicate whether an argument is required or optional
                     help='ESD output <basename>.spectrum',  # Help message
                     metavar='\b')  # Alternate display name in help message
@@ -42,18 +36,23 @@ parser.add_argument("-xmax",
 
 # Read arguments from commandline and assign to variables
 args = parser.parse_args()
-spectrum = args.spectrum
+spectrum = args.spectrumfile
 energycorrection_ev = args.energyshift
 xmin = args.xmin
 xmax = args.xmax
 output = args.output
 
 
+# Convert cm to inches as figsize input only accepts Imperial units
+def cm_to_inch(value):
+    return value / 2.54
+
+
 # Apply energy correction in eV and then convert back to wavelength
 def energy_correction(value):
     electronvolt = 1239.8424122  # Planck constant (eV•s) * Speed of Light (m/s)
-    energy_in_ev = (electronvolt/value)+energycorrection_ev
-    return electronvolt/energy_in_ev
+    energy_in_ev = (electronvolt / value) + energycorrection_ev
+    return electronvolt / energy_in_ev
 
 
 # Create Pandas dataframe (separated by whitespace)
@@ -75,14 +74,14 @@ plt.rcParams["font.size"] = 10
 
 # Plot Data
 # Plot NORMALISED ESD Spectrum
-ax1.plot(dataframe['Energy'], dataframe['TotalSpectrum']/max(dataframe['TotalSpectrum']),
+ax1.plot(dataframe['Energy'], dataframe['TotalSpectrum'] / max(dataframe['TotalSpectrum']),
          color='Black',
          linestyle='-',
          linewidth=1.0,
          marker='',
          label=f'ESD Spec, λ$_{{max}}$ = {x_max_energy:.1f} nm')
 # Plot NORMALISED Energy Corrected ESD Spectrum
-ax1.plot(energy_correction(dataframe['Energy']), dataframe['TotalSpectrum']/max(dataframe['TotalSpectrum']),
+ax1.plot(energy_correction(dataframe['Energy']), dataframe['TotalSpectrum'] / max(dataframe['TotalSpectrum']),
          color='Red',
          linestyle='--',
          linewidth=1.0,
